@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:weather_app/feature/weather_by_city/bloc/weather_city_bloc.dart';
+import 'package:weather_app/feature/weather_by_city/models/weather.dart';
 import 'package:weather_app/feature/weather_by_geolocation/bloc/weather_bloc.dart';
 import 'package:weather_app/feature/weather_by_geolocation/presentation/views/home.dart';
 
@@ -19,11 +21,18 @@ class MainApp extends StatelessWidget {
             future: _determinePosition(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return BlocProvider<WeatherBloc>(
-                  create: (context) => WeatherBloc()
-                    ..add(FetchWeather(position: snapshot.data as Position)),
-                  child: HomeView(),
-                );
+                return MultiBlocProvider(providers: [
+                  BlocProvider<WeatherBloc>(
+                    create: (context) => WeatherBloc()
+                      ..add(FetchWeather(position: snapshot.data as Position)),
+                    child: HomeView(),
+                  ),
+                  BlocProvider<WeatherCityBloc>(
+                    create: (context) => WeatherCityBloc()
+                      ..add(GetWeather(location: snapshot.data as String)),
+                    child: HomeView(),
+                  )
+                ], child: HomeView());
               } else {
                 return const Scaffold(
                   body: Center(

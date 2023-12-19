@@ -6,3 +6,8 @@ sealed class WeatherCityEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class GetWeather extends WeatherCityEvent {
+  final String location;
+  const GetWeather({required this.location});
+}
