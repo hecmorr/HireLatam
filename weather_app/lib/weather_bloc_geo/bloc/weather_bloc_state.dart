@@ -15,7 +15,7 @@ final class WeatherFailure extends WeatherBlocState {}
 
 final class WeatherSuccess extends WeatherBlocState {
   //Weather parameter that is going to feed the ui
-  final Weather weather;
+  final WeatherData weather;
   const WeatherSuccess({required this.weather});
   @override
   List<Object> get props => [weather];

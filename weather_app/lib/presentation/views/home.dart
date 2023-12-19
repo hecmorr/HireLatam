@@ -3,14 +3,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:weather_app/feature/weather_by_geolocation/bloc/weather_bloc.dart';
-import 'package:weather_app/feature/weather_by_geolocation/presentation/widgets/weather_icon.dart';
+import 'package:weather_app/presentation/widgets/shadow_color.dart';
+import 'package:weather_app/presentation/widgets/weather_icon.dart';
+import 'package:weather_app/services/services.dart';
+
+import '../../weather_bloc_geo/bloc/weather_bloc.dart';
 
 class HomeView extends StatefulWidget {
-  // final _locationController = TextEditingController();
-  // final _weatherBloc = WeatherBloc(weatherRepository: WeatherRepository());
-  HomeView({super.key});
+  const HomeView({super.key});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -19,8 +19,9 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    final locationController = TextEditingController();
+    final double height = MediaQuery.sizeOf(context).height;
+    final double width = MediaQuery.sizeOf(context).width;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -87,24 +88,33 @@ class _HomeViewState extends State<HomeView> {
                                 fontSize: 25),
                           ),
                           const SizedBox(height: 8),
-                          weatherIcon(state.weather.weatherConditionCode!),
-                          const TextField(
-                            decoration: InputDecoration(
-                                hintText: 'Enter the name of the city',
-                                hintStyle: TextStyle(color: Colors.grey)),
+                          weatherIcon(state.weather.weatherConditionCode),
+                          TextField(
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 25),
+                            controller: locationController,
+                            decoration: const InputDecoration(
+                              hintText: 'Enter the name of the city',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              focusColor: Colors.white,
+                            ),
                           ),
                           const SizedBox(height: 16),
                           SizedBox(
                             width: 200,
                             height: 50,
                             child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  context.read<WeatherBloc>().add(
+                                      WeatherCityNameFetched(
+                                          cityName: locationController.text));
+                                },
                                 child: const Text('Get Weather')),
                           ),
                           const SizedBox(height: 20),
                           Center(
                             child: Text(
-                              '${state.weather.temperature!.celsius?.round()}°C',
+                              '${state.weather.temperature.round()}°C',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 55,
@@ -114,7 +124,7 @@ class _HomeViewState extends State<HomeView> {
                           ),
                           Center(
                             child: Text(
-                              state.weather.weatherMain!,
+                              state.weather.weatherMain,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 25,
@@ -125,9 +135,7 @@ class _HomeViewState extends State<HomeView> {
                           const SizedBox(height: 8),
                           Center(
                             child: Text(
-                              DateFormat('EEEE dd -')
-                                  .add_jm()
-                                  .format(state.weather.date!),
+                              getTime(state.weather.timezone),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -136,42 +144,6 @@ class _HomeViewState extends State<HomeView> {
                             ),
                           ),
                           const SizedBox(height: 80),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   children: [
-                          //     Row(
-                          //       children: [
-                          //         Image.asset(
-                          //           'assets/11.png',
-                          //           scale: 8,
-                          //         ),
-                          //         const SizedBox(height: 5),
-                          //         Column(
-                          //           crossAxisAlignment:
-                          //               CrossAxisAlignment.start,
-                          //           children: [
-                          //             Text(
-                          //               'Sunrise',
-                          //               style: TextStyle(
-                          //                 color: Colors.white,
-                          //                 fontSize: 17,
-                          //               ),
-                          //             ),
-                          //             const SizedBox(height: 3),
-                          //             Text(
-                          //               'local time',
-                          //               style: TextStyle(
-                          //                 color: Colors.white,
-                          //                 fontWeight: FontWeight.bold,
-                          //                 fontSize: 17,
-                          //               ),
-                          //             ),
-                          //           ],
-                          //         )
-                          //       ],
-                          //     ),
-                          //   ],
-                          // )
                         ],
                       ),
                     );
@@ -180,9 +152,7 @@ class _HomeViewState extends State<HomeView> {
                       child: CircularProgressIndicator(),
                     );
                   } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const Center(child: Text('Something went wrong'));
                   }
                 },
               )
@@ -192,19 +162,4 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
-}
-
-class WeatherState {}
-
-Widget shadowColor({
-  required double coor1,
-  required double coor2,
-  required double height,
-  required double width,
-  required BoxDecoration boxDecoration,
-}) {
-  return Align(
-      alignment: AlignmentDirectional(coor1, coor2),
-      child:
-          Container(height: height, width: width, decoration: boxDecoration));
 }
