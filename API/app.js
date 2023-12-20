@@ -10,7 +10,25 @@ const API_KEY = process.env.WEATHER_API_KEY;
 // Define a route for the root path of the application
 app.get("/", (req, res) => {
   const city = req.query.city; // Read the city query parameter from the request
-  const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
+  const lat = req.query.lat;
+  const lon = req.query.lon;
+
+  const params = new URLSearchParams();
+  if (lat) {
+    params.set("lat", lat);
+  }
+
+  if (lon) {
+    params.set("lon", lon);
+  }
+
+  if (city) {
+    params.set("q", city);
+  }
+
+  const paramsString = params.toString();
+
+  const url = `http://api.openweathermap.org/data/2.5/weather?${paramsString}&units=metric&appid=${API_KEY}`;
   console.log(url);
 
   // Make an HTTP GET request to the API using axios
@@ -20,17 +38,34 @@ app.get("/", (req, res) => {
       const data = response.data;
       const cityName = data.name;
       const description = data.weather[0].main;
+      const time = data.timezone;
       const temperature = data.main.temp;
       const code = data.weather[0].id;
-      const message = {
-        location: cityName,
+
+      const weatherData = {
+        areaName: cityName,
         temperature: temperature,
-        description: description,
-        code: code,
+        weatherMain: description,
+        time: time,
+        weatherConditionCode: code,
+      };
+
+      if (res.status == 400) {
+        return "City not found";
+      } else if (res.status == 500) {
+        return "The name of the city was not introduced properly";
+      }
+
+      const finalData = {
+        status: res.status,
+        body: weatherData,
       };
 
       //   console.log(data);
-      console.log(message);
+      console.log(weatherData);
+      res.send(weatherData);
+
+      return finalData;
     })
     .catch((error) => {
       console.error(error);
