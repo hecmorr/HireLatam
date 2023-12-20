@@ -13,6 +13,8 @@ final class WeatherLoading extends WeatherBlocState {}
 
 final class WeatherFailure extends WeatherBlocState {}
 
+final class WeatherNotFound extends WeatherBlocState {}
+
 final class WeatherSuccess extends WeatherBlocState {
   //Weather parameter that is going to feed the ui
   final WeatherData weather;

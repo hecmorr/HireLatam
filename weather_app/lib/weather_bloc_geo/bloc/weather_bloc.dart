@@ -38,10 +38,7 @@ class WeatherBloc extends Bloc<WeatherBlocEvent, WeatherBlocState> {
       final response = await weatherApi.getWeather(event.cityName);
       emit(WeatherSuccess(weather: response));
     } catch (e) {
-      const AlertDialog(
-        content: Text('The name of the city was not introduced properly'),
-      );
-      emit(WeatherFailure());
+      emit(WeatherNotFound());
     }
   }
 }

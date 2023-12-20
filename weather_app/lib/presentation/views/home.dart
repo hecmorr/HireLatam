@@ -149,8 +149,25 @@ class _HomeViewState extends State<HomeView> {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
+                  } else if (state is WeatherNotFound) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AlertDialog(
+                          content: const Text(
+                              'Pleae provide a valid name for the city'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/');
+                                },
+                                child: const Text('Close'))
+                          ],
+                        ),
+                      ],
+                    );
                   } else {
-                    return const Center(child: Text('Something went wrong'));
+                    return const Text('Something went wrong');
                   }
                 },
               )

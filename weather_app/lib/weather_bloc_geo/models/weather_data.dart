@@ -25,6 +25,8 @@ class WeatherRepository {
       // parse the JSON data and return a Weather object
     } else if (response.statusCode == 500) {
       throw Exception("The name of the city was not introduced properly");
+    } else if (response.statusCode == 400) {
+      throw Exception("City not found");
     } else {
       throw Exception("Failed to get weather");
     }
