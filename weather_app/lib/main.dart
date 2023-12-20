@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-
 import 'package:weather_app/presentation/views/home.dart';
-import 'package:weather_app/weather_bloc_geo/services/geolocator.dart';
-
+import 'package:weather_app/services/services.dart';
 import 'weather_bloc_geo/bloc/weather_bloc.dart';
 
 void main() {

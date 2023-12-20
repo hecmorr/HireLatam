@@ -3,10 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_app/presentation/widgets/shadow_color.dart';
-import 'package:weather_app/presentation/widgets/weather_icon.dart';
+import 'package:weather_app/presentation/widgets/widgets.dart';
 import 'package:weather_app/services/services.dart';
-
 import '../../weather_bloc_geo/bloc/weather_bloc.dart';
 
 class HomeView extends StatefulWidget {
